@@ -1,6 +1,6 @@
 # Example Applications
 
-This directory contains example applications that demonstrate how to use the scaffold_project library with proper POSIX-compliant CLI design.
+This directory contains example applications that demonstrate how to use the danp_zephyr_support library with proper POSIX-compliant CLI design.
 
 ## Building Examples
 
@@ -17,29 +17,29 @@ make
 After building, run the example from the build directory:
 
 ```bash
-./ScaffoldProjectExample <command> [arguments]
+./DanpZephyrSupportExample <command> [arguments]
 ```
 
 ### Available Commands
 
 ```bash
 # Get library version
-./ScaffoldProjectExample version
+./DanpZephyrSupportExample version
 
 # Add two numbers
-./ScaffoldProjectExample add 5 3
+./DanpZephyrSupportExample add 5 3
 
 # Multiply two numbers (demonstrates error handling)
-./ScaffoldProjectExample multiply 7 6
+./DanpZephyrSupportExample multiply 7 6
 
 # Process a string
-./ScaffoldProjectExample foo "hello world"
+./DanpZephyrSupportExample foo "hello world"
 
 # Validate a number
-./ScaffoldProjectExample bar 42
+./DanpZephyrSupportExample bar 42
 
 # Calculate factorial (must be 0-12)
-./ScaffoldProjectExample factorial 5
+./DanpZephyrSupportExample factorial 5
 ```
 
 ### Verbose Mode
@@ -47,8 +47,8 @@ After building, run the example from the build directory:
 Use the `-v` flag to see detailed execution information:
 
 ```bash
-./ScaffoldProjectExample -v add 10 20
-# Output to stderr: Calling scaffold_project_add(10, 20)...
+./DanpZephyrSupportExample -v add 10 20
+# Output to stderr: Calling danp_zephyr_support_add(10, 20)...
 # Output to stdout: 30
 # Output to stderr: Result: 10 + 20 = 30
 ```
@@ -58,7 +58,7 @@ Use the `-v` flag to see detailed execution information:
 Display usage information:
 
 ```bash
-./ScaffoldProjectExample -h
+./DanpZephyrSupportExample -h
 ```
 
 ## Understanding the Example Code
@@ -211,20 +211,20 @@ printf("  -o <file>   Write output to file\n");
 
 ### Simple Function Call (version)
 ```c
-const char *version = scaffold_project_get_version();
+const char *version = danp_zephyr_support_get_version();
 printf("%s\n", version);
 ```
 
 ### Function with Return Value (add)
 ```c
-int32_t result = scaffold_project_add(a, b);
+int32_t result = danp_zephyr_support_add(a, b);
 printf("%d\n", result);
 ```
 
 ### Error Handling with Status Codes (multiply)
 ```c
-scaffold_project_status_t status = scaffold_project_multiply(a, b, &result);
-if (status == SCAFFOLD_PROJECT_SUCCESS)
+danp_zephyr_support_status_t status = danp_zephyr_support_multiply(a, b, &result);
+if (status == DANP_ZEPHYR_SUPPORT_SUCCESS)
 {
     printf("%d\n", result);
 }
@@ -238,8 +238,8 @@ else
 ### String Processing with Buffers (foo)
 ```c
 char output[BUFFER_SIZE];
-scaffold_project_status_t status = scaffold_project_foo(input, output, sizeof(output));
-if (status == SCAFFOLD_PROJECT_SUCCESS)
+danp_zephyr_support_status_t status = danp_zephyr_support_foo(input, output, sizeof(output));
+if (status == DANP_ZEPHYR_SUPPORT_SUCCESS)
 {
     printf("%s\n", output);
 }
@@ -247,14 +247,14 @@ if (status == SCAFFOLD_PROJECT_SUCCESS)
 
 ### Boolean Return Values (bar)
 ```c
-bool isValid = scaffold_project_bar(value);
+bool isValid = danp_zephyr_support_bar(value);
 printf("%s\n", isValid ? "valid" : "invalid");
 ```
 
 ### Result Structures (factorial)
 ```c
-scaffold_project_result_t result = scaffold_project_factorial(n);
-if (result.status == SCAFFOLD_PROJECT_SUCCESS)
+danp_zephyr_support_result_t result = danp_zephyr_support_factorial(n);
+if (result.status == DANP_ZEPHYR_SUPPORT_SUCCESS)
 {
     printf("%d\n", result.value);
 }
@@ -282,24 +282,24 @@ The example is designed to work well with Unix pipes and redirection:
 
 ```bash
 # Output only (stdout)
-./ScaffoldProjectExample add 5 3 > result.txt
+./DanpZephyrSupportExample add 5 3 > result.txt
 
 # Errors only (stderr)
-./ScaffoldProjectExample add 5 3 2> errors.txt
+./DanpZephyrSupportExample add 5 3 2> errors.txt
 
 # Verbose output to stderr, result to stdout
-./ScaffoldProjectExample -v add 5 3 2> log.txt > result.txt
+./DanpZephyrSupportExample -v add 5 3 2> log.txt > result.txt
 
 # Chain commands
-./ScaffoldProjectExample add 5 3 | xargs ./ScaffoldProjectExample multiply 2
+./DanpZephyrSupportExample add 5 3 | xargs ./DanpZephyrSupportExample multiply 2
 ```
 
 ## Migration Notes
 
 After running `./scripts/migration.sh YourLibName`, the example files will be automatically updated:
 
-- `example.c` - All `scaffold_project_*` calls → `your_lib_name_*`
-- `ScaffoldProjectExample` → `example_your_lib_name_cli` (executable)
+- `example.c` - All `danp_zephyr_support_*` calls → `your_lib_name_*`
+- `DanpZephyrSupportExample` → `example_your_lib_name_cli` (executable)
 - Function names, types, and constants automatically renamed
 
 Make sure to:
@@ -309,7 +309,7 @@ Make sure to:
 
 ## Further Reading
 
-- `../include/scaffold_project/scaffold_project.h` - Full API documentation
+- `../include/danp_zephyr_support/danp_zephyr_support.h` - Full API documentation
 - `../docs/FORMATTING.md` - Code style guidelines
 - `../test/` - Unit test examples
 - `man getopt` - POSIX getopt documentation

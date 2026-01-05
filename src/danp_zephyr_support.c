@@ -1,10 +1,10 @@
-/* scaffold_project.c - Core implementation of scaffold_project library */
+/* danp_zephyr_support.c - Core implementation of danp_zephyr_support library */
 
 /* All Rights Reserved */
 
 /* Includes */
 
-#include "scaffold_project/scaffold_project.h"
+#include "danp_zephyr_support/danp_zephyr_support.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -27,17 +27,17 @@
 
 /* Functions */
 
-const char *scaffold_project_get_version(void)
+const char *danp_zephyr_support_get_version(void)
 {
     return VERSION_STRING;
 }
 
-int32_t scaffold_project_add(int32_t a, int32_t b)
+int32_t danp_zephyr_support_add(int32_t a, int32_t b)
 {
     return a + b;
 }
 
-scaffold_project_status_t scaffold_project_multiply(
+danp_zephyr_support_status_t danp_zephyr_support_multiply(
     int32_t a,
     int32_t b,
     int32_t *result)
@@ -45,16 +45,16 @@ scaffold_project_status_t scaffold_project_multiply(
     /* Validate input parameter */
     if (result == NULL)
     {
-        return SCAFFOLD_PROJECT_ERROR_NULL;
+        return DANP_ZEPHYR_SUPPORT_ERROR_NULL;
     }
 
     /* Perform multiplication */
     *result = a * b;
 
-    return SCAFFOLD_PROJECT_SUCCESS;
+    return DANP_ZEPHYR_SUPPORT_SUCCESS;
 }
 
-scaffold_project_status_t scaffold_project_foo(
+danp_zephyr_support_status_t danp_zephyr_support_foo(
     const char *input,
     char *output,
     size_t outputSize)
@@ -62,12 +62,12 @@ scaffold_project_status_t scaffold_project_foo(
     /* Validate input parameters */
     if (input == NULL || output == NULL)
     {
-        return SCAFFOLD_PROJECT_ERROR_NULL;
+        return DANP_ZEPHYR_SUPPORT_ERROR_NULL;
     }
 
     if (outputSize == 0)
     {
-        return SCAFFOLD_PROJECT_ERROR_INVALID;
+        return DANP_ZEPHYR_SUPPORT_ERROR_INVALID;
     }
 
     /* Get input length */
@@ -76,30 +76,30 @@ scaffold_project_status_t scaffold_project_foo(
     /* Check if output buffer is large enough */
     if (inputLen + 10 >= outputSize)
     {
-        return SCAFFOLD_PROJECT_ERROR_INVALID;
+        return DANP_ZEPHYR_SUPPORT_ERROR_INVALID;
     }
 
     /* Process the string by adding a prefix */
     snprintf(output, outputSize, "Processed: %s", input);
 
-    return SCAFFOLD_PROJECT_SUCCESS;
+    return DANP_ZEPHYR_SUPPORT_SUCCESS;
 }
 
-bool scaffold_project_bar(int32_t value)
+bool danp_zephyr_support_bar(int32_t value)
 {
     /* Example validation: value must be in range [0, 100] */
     return (value >= 0 && value <= 100);
 }
 
-scaffold_project_result_t scaffold_project_factorial(int32_t n)
+danp_zephyr_support_result_t danp_zephyr_support_factorial(int32_t n)
 {
-    scaffold_project_result_t result;
+    danp_zephyr_support_result_t result;
 
     /* Validate input */
     if (n < 0)
     {
         result.value = 0;
-        result.status = SCAFFOLD_PROJECT_ERROR_INVALID;
+        result.status = DANP_ZEPHYR_SUPPORT_ERROR_INVALID;
         return result;
     }
 
@@ -107,7 +107,7 @@ scaffold_project_result_t scaffold_project_factorial(int32_t n)
     if (n > MAX_FACTORIAL_INPUT)
     {
         result.value = 0;
-        result.status = SCAFFOLD_PROJECT_ERROR_INVALID;
+        result.status = DANP_ZEPHYR_SUPPORT_ERROR_INVALID;
         return result;
     }
 
@@ -119,7 +119,7 @@ scaffold_project_result_t scaffold_project_factorial(int32_t n)
     }
 
     result.value = factorial;
-    result.status = SCAFFOLD_PROJECT_SUCCESS;
+    result.status = DANP_ZEPHYR_SUPPORT_SUCCESS;
 
     return result;
 }
