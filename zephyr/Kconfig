@@ -3,3 +3,16 @@ config DANP_SUPPORT
     default y
     help
       Enable the DANP Network Library Support.
+
+if DANP
+    config DANP_LOG_LEVEL
+        int "DANP log level"
+        default 2
+        help
+            Set the log level for the DANP module:
+            0: Off
+            1: Error
+            2: Warning
+            3: Info
+            4: Debug
+endif # DANP
