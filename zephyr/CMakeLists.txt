@@ -8,6 +8,8 @@ if(CONFIG_DANP_SUPPORT)
         ../src/danp_shell.c
         ../src/danp_log.c
         ../src/danp_utilities.c
+        ../src/services/danp_ftp_service.c
+        ../src/services/danp_ftp_service_shell.c
         # Add any other source files from src/ here
     )
 
