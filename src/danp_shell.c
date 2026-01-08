@@ -11,6 +11,7 @@
 #include <zephyr/logging/log.h>
 
 #include "danp/danp.h"
+#include "danp/danp_utilities.h"
 
 /* Imports */
 
