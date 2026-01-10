@@ -4,8 +4,6 @@
 
 /* Includes */
 
-#include <errno.h>
-
 #include <zephyr/logging/log.h>
 
 #include "danp/danp_utilities.h"

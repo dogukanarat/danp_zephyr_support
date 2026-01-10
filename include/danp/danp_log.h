@@ -32,6 +32,12 @@ extern void danp_log_message_impl(
     const char *message,
     va_list args);
 
+extern void danp_log_message_io_impl(
+    danp_log_level_t level,
+    const char *funcName,
+    const char *message,
+    va_list args);
+
 #ifdef __cplusplus
 }
 #endif

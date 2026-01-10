@@ -153,7 +153,7 @@ static danp_ftp_status_t danp_ftp_service_send_message(
 
         if (payload_length > DANP_FTP_MAX_PAYLOAD_SIZE)
         {
-            danp_log_message(DANP_LOG_ERROR, "FTP service payload too large: %u", payload_length);
+            danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service payload too large: %u", payload_length);
             status = DANP_FTP_STATUS_INVALID_PARAM;
             break;
         }
@@ -181,13 +181,13 @@ static danp_ftp_status_t danp_ftp_service_send_message(
 
         if (send_result < 0)
         {
-            danp_log_message(DANP_LOG_ERROR, "FTP service send failed: %d", send_result);
+            danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service send failed: %d", send_result);
             status = DANP_FTP_STATUS_TRANSFER_FAILED;
             break;
         }
 
         danp_log_message(
-            DANP_LOG_DEBUG,
+            DANP_LOG_LEVEL_DBG,
             "FTP SVC TX: type=%u flags=0x%02X seq=%u len=%u",
             type,
             flags,
@@ -236,11 +236,11 @@ static danp_ftp_status_t danp_ftp_service_receive_message(
         {
             if (recv_result == 0)
             {
-                danp_log_message(DANP_LOG_WARN, "FTP service receive timeout");
+                danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service receive timeout");
             }
             else
             {
-                danp_log_message(DANP_LOG_ERROR, "FTP service receive failed: %d", recv_result);
+                danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service receive failed: %d", recv_result);
             }
             status = DANP_FTP_STATUS_TRANSFER_FAILED;
             break;
@@ -253,7 +253,7 @@ static danp_ftp_status_t danp_ftp_service_receive_message(
         if (calculated_crc != message->header.crc)
         {
             danp_log_message(
-                DANP_LOG_WARN,
+                DANP_LOG_LEVEL_WRN,
                 "FTP service CRC mismatch: expected=0x%08X got=0x%08X",
                 message->header.crc,
                 calculated_crc);
@@ -262,7 +262,7 @@ static danp_ftp_status_t danp_ftp_service_receive_message(
         }
 
         danp_log_message(
-            DANP_LOG_DEBUG,
+            DANP_LOG_LEVEL_DBG,
             "FTP SVC RX: type=%u flags=0x%02X seq=%u len=%u",
             message->header.type,
             message->header.flags,
@@ -310,7 +310,7 @@ static danp_ftp_status_t danp_ftp_service_wait_for_ack(
             else
             {
                 danp_log_message(
-                    DANP_LOG_WARN,
+                    DANP_LOG_LEVEL_WRN,
                     "FTP service ACK seq mismatch: expected=%u got=%u",
                     expected_seq,
                     message.header.sequence_number);
@@ -320,14 +320,14 @@ static danp_ftp_status_t danp_ftp_service_wait_for_ack(
         }
         else if (message.header.type == DANP_FTP_PACKET_TYPE_NACK)
         {
-            danp_log_message(DANP_LOG_WARN, "FTP service received NACK");
+            danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service received NACK");
             status = DANP_FTP_STATUS_TRANSFER_FAILED;
             break;
         }
         else
         {
             danp_log_message(
-                DANP_LOG_WARN,
+                DANP_LOG_LEVEL_WRN,
                 "FTP service unexpected packet type: %u",
                 message.header.type);
             status = DANP_FTP_STATUS_TRANSFER_FAILED;
@@ -364,7 +364,7 @@ static danp_ftp_status_t danp_ftp_service_handle_read_request(
     for (;;)
     {
         danp_log_message(
-            DANP_LOG_INFO,
+            DANP_LOG_LEVEL_INF,
             "FTP service handling read request for file (len=%zu)",
             file_id_len);
 
@@ -378,7 +378,7 @@ static danp_ftp_status_t danp_ftp_service_handle_read_request(
 
         if (status < 0)
         {
-            danp_log_message(DANP_LOG_WARN, "FTP service file open failed: %d", status);
+            danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service file open failed: %d", status);
 
             if (status == DANP_FTP_STATUS_FILE_NOT_FOUND)
             {
@@ -429,7 +429,7 @@ static danp_ftp_status_t danp_ftp_service_handle_read_request(
 
             if (read_result < 0)
             {
-                danp_log_message(DANP_LOG_ERROR, "FTP service file read failed: %d", read_result);
+                danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service file read failed: %d", read_result);
                 status = read_result;
                 break;
             }
@@ -483,7 +483,7 @@ static danp_ftp_status_t danp_ftp_service_handle_read_request(
 
             if (status < 0)
             {
-                danp_log_message(DANP_LOG_ERROR, "FTP service ACK timeout");
+                danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service ACK timeout");
                 break;
             }
 
@@ -498,7 +498,7 @@ static danp_ftp_status_t danp_ftp_service_handle_read_request(
         if (status >= 0)
         {
             danp_log_message(
-                DANP_LOG_INFO,
+                DANP_LOG_LEVEL_INF,
                 "FTP service read complete: %zu bytes",
                 offset);
             status = (danp_ftp_status_t)offset;
@@ -533,7 +533,7 @@ static danp_ftp_status_t danp_ftp_service_handle_write_request(
     for (;;)
     {
         danp_log_message(
-            DANP_LOG_INFO,
+            DANP_LOG_LEVEL_INF,
             "FTP service handling write request for file (len=%zu)",
             file_id_len);
 
@@ -547,7 +547,7 @@ static danp_ftp_status_t danp_ftp_service_handle_write_request(
 
         if (status < 0)
         {
-            danp_log_message(DANP_LOG_WARN, "FTP service file open failed: %d", status);
+            danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service file open failed: %d", status);
             response_payload[0] = DANP_FTP_RESP_ERROR;
 
             danp_ftp_service_send_message(
@@ -588,14 +588,14 @@ static danp_ftp_status_t danp_ftp_service_handle_write_request(
 
             if (status < 0)
             {
-                danp_log_message(DANP_LOG_ERROR, "FTP service receive data failed");
+                danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service receive data failed");
                 break;
             }
 
             if (data_msg.header.type != DANP_FTP_PACKET_TYPE_DATA)
             {
                 danp_log_message(
-                    DANP_LOG_WARN,
+                    DANP_LOG_LEVEL_WRN,
                     "FTP service unexpected packet type: %u",
                     data_msg.header.type);
 
@@ -612,7 +612,7 @@ static danp_ftp_status_t danp_ftp_service_handle_write_request(
             if (data_msg.header.sequence_number != ctx->sequence_number)
             {
                 danp_log_message(
-                    DANP_LOG_WARN,
+                    DANP_LOG_LEVEL_WRN,
                     "FTP service seq mismatch: expected=%u got=%u",
                     ctx->sequence_number,
                     data_msg.header.sequence_number);
@@ -638,7 +638,7 @@ static danp_ftp_status_t danp_ftp_service_handle_write_request(
             if (write_result < 0)
             {
                 danp_log_message(
-                    DANP_LOG_ERROR,
+                    DANP_LOG_LEVEL_ERR,
                     "FTP service file write failed: %d",
                     write_result);
                 status = write_result;
@@ -683,7 +683,7 @@ static danp_ftp_status_t danp_ftp_service_handle_write_request(
         if (status >= 0)
         {
             danp_log_message(
-                DANP_LOG_INFO,
+                DANP_LOG_LEVEL_INF,
                 "FTP service write complete: %zu bytes",
                 offset);
             status = (danp_ftp_status_t)offset;
@@ -717,7 +717,7 @@ static void danp_ftp_client_handler_thread(void *arg)
         }
 
         danp_log_message(
-            DANP_LOG_INFO,
+            DANP_LOG_LEVEL_INF,
             "FTP service client handler started for node %u",
             ctx->socket->remote_node);
 
@@ -729,14 +729,14 @@ static void danp_ftp_client_handler_thread(void *arg)
 
         if (status < 0)
         {
-            danp_log_message(DANP_LOG_WARN, "FTP service command receive failed");
+            danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service command receive failed");
             break;
         }
 
         if (message.header.type != DANP_FTP_PACKET_TYPE_COMMAND)
         {
             danp_log_message(
-                DANP_LOG_WARN,
+                DANP_LOG_LEVEL_WRN,
                 "FTP service expected command, got type: %u",
                 message.header.type);
             break;
@@ -744,7 +744,7 @@ static void danp_ftp_client_handler_thread(void *arg)
 
         if (message.header.payload_length < 2)
         {
-            danp_log_message(DANP_LOG_WARN, "FTP service command payload too short");
+            danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service command payload too short");
             response_payload[0] = DANP_FTP_RESP_ERROR;
             danp_ftp_service_send_message(
                 ctx,
@@ -761,7 +761,7 @@ static void danp_ftp_client_handler_thread(void *arg)
 
         if (file_id_len + 2 > message.header.payload_length)
         {
-            danp_log_message(DANP_LOG_WARN, "FTP service invalid file_id_len");
+            danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service invalid file_id_len");
             response_payload[0] = DANP_FTP_RESP_ERROR;
             danp_ftp_service_send_message(
                 ctx,
@@ -783,11 +783,11 @@ static void danp_ftp_client_handler_thread(void *arg)
             break;
 
         case DANP_FTP_CMD_ABORT:
-            danp_log_message(DANP_LOG_INFO, "FTP service received abort command");
+            danp_log_message(DANP_LOG_LEVEL_INF, "FTP service received abort command");
             break;
 
         default:
-            danp_log_message(DANP_LOG_WARN, "FTP service unknown command: %u", command);
+            danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service unknown command: %u", command);
             response_payload[0] = DANP_FTP_RESP_ERROR;
             danp_ftp_service_send_message(
                 ctx,
@@ -816,7 +816,7 @@ static void danp_ftp_client_handler_thread(void *arg)
             danp_close(ctx->socket);
         }
 
-        danp_log_message(DANP_LOG_INFO, "FTP service client handler terminated");
+        danp_log_message(DANP_LOG_LEVEL_INF, "FTP service client handler terminated");
 
         /* Free client context */
         memset(ctx, 0, sizeof(danp_ftp_client_context_t));
@@ -849,7 +849,7 @@ static void danp_ftp_service_thread(void *arg)
             break;
         }
 
-        danp_log_message(DANP_LOG_INFO, "FTP service thread started");
+        danp_log_message(DANP_LOG_LEVEL_INF, "FTP service thread started");
 
         while (svc->is_running)
         {
@@ -860,7 +860,7 @@ static void danp_ftp_service_thread(void *arg)
             }
 
             danp_log_message(
-                DANP_LOG_INFO,
+                DANP_LOG_LEVEL_INF,
                 "FTP service accepted connection from node %u",
                 client_socket->remote_node);
 
@@ -870,7 +870,7 @@ static void danp_ftp_service_thread(void *arg)
 
             if (!client_ctx)
             {
-                danp_log_message(DANP_LOG_ERROR, "FTP service failed to allocate client context");
+                danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service failed to allocate client context");
                 danp_close(client_socket);
                 continue;
             }
@@ -889,7 +889,7 @@ static void danp_ftp_service_thread(void *arg)
 
             if (!client_thread)
             {
-                danp_log_message(DANP_LOG_ERROR, "FTP service failed to create client thread");
+                danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service failed to create client thread");
                 danp_close(client_socket);
                 osal_memory_free(client_ctx);
                 continue;
@@ -899,7 +899,7 @@ static void danp_ftp_service_thread(void *arg)
         break;
     }
 
-    danp_log_message(DANP_LOG_INFO, "FTP service thread terminated");
+    danp_log_message(DANP_LOG_LEVEL_INF, "FTP service thread terminated");
 }
 
 /**
@@ -926,7 +926,7 @@ int32_t danp_ftp_service_init(const danp_ftp_service_config_t *config)
     {
         if (!config)
         {
-            danp_log_message(DANP_LOG_ERROR, "FTP service config is NULL");
+            danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service config is NULL");
             ret = -1;
             break;
         }
@@ -934,14 +934,14 @@ int32_t danp_ftp_service_init(const danp_ftp_service_config_t *config)
         if (!config->fs.open || !config->fs.close ||
             !config->fs.read || !config->fs.write)
         {
-            danp_log_message(DANP_LOG_ERROR, "FTP service filesystem callbacks incomplete");
+            danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service filesystem callbacks incomplete");
             ret = -1;
             break;
         }
 
         if (ftp_service_ctx.is_initialized)
         {
-            danp_log_message(DANP_LOG_WARN, "FTP service already initialized");
+            danp_log_message(DANP_LOG_LEVEL_WRN, "FTP service already initialized");
             ret = -1;
             break;
         }
@@ -953,7 +953,7 @@ int32_t danp_ftp_service_init(const danp_ftp_service_config_t *config)
         sock = danp_socket(DANP_TYPE_STREAM);
         if (!sock)
         {
-            danp_log_message(DANP_LOG_ERROR, "FTP service failed to create socket");
+            danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service failed to create socket");
             ret = -1;
             break;
         }
@@ -961,7 +961,7 @@ int32_t danp_ftp_service_init(const danp_ftp_service_config_t *config)
         bind_result = danp_bind(sock, DANP_FTP_SERVICE_PORT);
         if (bind_result < 0)
         {
-            danp_log_message(DANP_LOG_ERROR, "FTP service failed to bind to port %u", DANP_FTP_SERVICE_PORT);
+            danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service failed to bind to port %u", DANP_FTP_SERVICE_PORT);
             danp_close(sock);
             ret = -1;
             break;
@@ -981,7 +981,7 @@ int32_t danp_ftp_service_init(const danp_ftp_service_config_t *config)
 
         if (!thread_handle)
         {
-            danp_log_message(DANP_LOG_ERROR, "FTP service failed to create service thread");
+            danp_log_message(DANP_LOG_LEVEL_ERR, "FTP service failed to create service thread");
             danp_close(sock);
             ftp_service_ctx.is_initialized = false;
             ret = -1;
@@ -991,7 +991,7 @@ int32_t danp_ftp_service_init(const danp_ftp_service_config_t *config)
         ftp_service_ctx.service_thread = thread_handle;
 
         danp_log_message(
-            DANP_LOG_INFO,
+            DANP_LOG_LEVEL_INF,
             "FTP service initialized on port %u",
             DANP_FTP_SERVICE_PORT);
 
